@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@400;500;700&family=Playfair+Display:wght@400;700&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+            margin: 0;
+            padding: 0;
+            color: #2d3748;
+        }
+        h1, h2, h3, h4 {
+             font-family: 'Cormorant Garamond', serif;
+        }
+        .brand {
+            font-family: 'Pacifico', cursive;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .appointment-form {
+             max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            background-image: linear-gradient(to bottom right, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <header class="bg-blue-600 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="https://storage.googleapis.com/a1aa/image/Fa0fsDCG1pzDNaR6RF7uza0wa7KNf0BzeEEuwzJeIazpAsgQB.jpg" alt="DocHub logo" class="w-12 h-12 mr-2" width="48" height="48">
+                <h1 class="text-2xl font-bold brand">DocHub</h1>
+            </div>
+            <nav>
+                <ul class="flex space-x-4">
+                    <li>
+                        <a href="/" class="hover:underline"><i class="fas fa-home text-2xl"></i></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4">
+        <section class="my-8">
+            <div class="appointment-form">
+                <h2 class="text-3xl font-bold mb-6 text-center">Book Appointment</h2>
+                <form action="{{ url_for('appointment') }}" method="POST">
+                    <div class="mb-4">
+                        <label for="name" class="block text-gray-700">Full Name</label>
+                        <input type="text" id="name" name="name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="block text-gray-700">Email</label>
+                        <input type="email" id="email" name="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="phone" class="block text-gray-700">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="doctor" class="block text-gray-700">Select Doctor</label>
+                        <select id="doctor" name="doctor" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" required>
+                            <option value="">-- Select Doctor --</option>
+                            {% for doctor in doctors %}
+                                <option value="{{ doctor.id }}" data-location="{{ doctor.location }}">{{ doctor.name }} - {{ doctor.specialty }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="consultation-type" class="block text-gray-700">Consultation Type</label>
+                        <select id="consultation-type" name="consultation-type" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" required>
+                            <option value="">-- Select Consultation Type --</option>
+                            <option value="In-Person">In-Person</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="location" class="block text-gray-700">Location</label>
+                        <select id="location" name="location" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-gray-100" disabled required>
+                            <!-- Location will be dynamically updated -->
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="reason" class="block text-gray-700">Reason for Appointment</label>
+                        <textarea id="reason" name="reason" rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="Briefly describe the reason for your appointment"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="date" class="block text-gray-700">Date</label>
+                        <input type="date" id="date" name="date" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" required>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Book Appointment</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- View Table Button -->
+        <div class="text-center my-8">
+            <button id="viewTableBtn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">View Table</button>
+        </div>
+
+        <!-- Appointments Table -->
+        <section id="appointmentsTable" class="my-8 hidden">
+            <h2 class="text-3xl font-bold mb-6 text-center">Your Appointments</h2>
+            <table class="w-full bg-white rounded-lg shadow">
+                <thead>
+                    <tr class="bg-blue-600 text-white">
+                        <th class="p-3">Name</th>
+                        <th class="p-3">Email</th>
+                        <th class="p-3">Phone</th>
+                        <th class="p-3">Doctor</th>
+                        <th class="p-3">Consultation Type</th>
+                        <th class="p-3">Location</th>
+                        <th class="p-3">Reason</th>
+                        <th class="p-3">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in appointments %}
+                    <tr class="border-b">
+                        <td class="p-3">{{ appointment.name }}</td>
+                        <td class="p-3">{{ appointment.email }}</td>
+                        <td class="p-3">{{ appointment.phone }}</td>
+                        <td class="p-3">{{ appointment.doctor_id }}</td>
+                        <td class="p-3">{{ appointment.consultation_type }}</td>
+                        <td class="p-3">{{ appointment.location }}</td>
+                        <td class="p-3">{{ appointment.reason }}</td>
+                        <td class="p-3">{{ appointment.date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script>
+        // Update location based on selected doctor
+        const doctorSelect = document.getElementById('doctor');
+        const locationSelect = document.getElementById('location');
+
+        doctorSelect.addEventListener('change', () => {
+            const selectedOption = doctorSelect.options[doctorSelect.selectedIndex];
+            const location = selectedOption.getAttribute('data-location');
+            locationSelect.innerHTML = `<option value="${location}">${location}</option>`;
+            locationSelect.disabled = false;
+        });
+
+        // Toggle table visibility
+        const viewTableBtn = document.getElementById('viewTableBtn');
+        const appointmentsTable = document.getElementById('appointmentsTable');
+
+        viewTableBtn.addEventListener('click', () => {
+            appointmentsTable.classList.toggle('hidden');
+            viewTableBtn.textContent = appointmentsTable.classList.contains('hidden') ? 'View Table' : 'Hide Table';
+        });
+    </script>
+</body>
+</html>

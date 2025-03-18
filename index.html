@@ -1,0 +1,197 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title >DocHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #ECEFF1;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1,h2 {
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .doctor-card h2 {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+        }
+        .doctor-card:hover h2 {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <header class="bg-gray-700 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <img alt="DocHub logo, a stylized stethoscope forming the letter D" class="w-12 h-12 mr-2" height="48" src="https://storage.googleapis.com/a1aa/image/Fa0fsDCG1pzDNaR6RF7uza0wa7KNf0BzeEEuwzJeIazpAsgQB.jpg" width="48"/>
+            </div>
+            <nav>
+                <ul class="flex space-x-4">
+                    <li>
+                        <a class="hover:underline" href="/">
+                            <i class="fas fa-home text-2xl"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="hover:underline" href="#about-section">
+                            <i class="fas fa-info-circle text-2xl"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="text-right mb-4">
+        {% if current_user.is_authenticated %}
+        <p>
+            Hello, {{ current_user.id }}!
+            <a class="inline-block bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors" href="{{ url_for('logout') }}">
+                Logout
+            </a>
+        </p>
+        {% else %}
+        <p>
+            <a class="inline-block bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors" href="{{ url_for('login') }}">
+                Login
+            </a>
+        </p>
+        {% endif %}
+    </div>
+    <h1 class="text-center text-4xl md:text-5xl font-extrabold mb-8 py-2">DocHub : Health Selection</h1>
+
+    <h2 class="text-center text-4xl md:text-5xl font-extrabold mb-8 py-2">
+        Find Your Perfect Health Match
+    </h2>
+
+
+    <!-- Search Bar -->
+    <div class="flex justify-center mb-8">
+        <div class="relative w-3/4 md:w-1/2">
+            <input class="w-full p-3 rounded-full focus:outline-none focus:border-blue-500 transition-shadow duration-300 ease-in-out shadow-md hover:shadow-lg glassmorphism" id="search-bar" placeholder="Search doctors by name, specialty, or location..." type="text"/>
+            <button class="absolute right-0 top-0 mt-2 mr-2 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Doctor List -->
+    <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="doctor-list">
+        {% for doctor in doctors %}
+        <li class="doctor-card bg-white rounded-lg shadow-md p-6 transition-transform transform hover:-translate-y-1 hover:shadow-lg" data-location="{{ doctor.location | lower }}" data-name="{{ doctor.name | lower }}" data-specialty="{{ doctor.specialty | lower }}">
+            <a class="no-underline text-gray-800" href="{{ url_for('doctor_detail', doctor_id=doctor.id) }}">
+                <h2 class="text-2xl font-bold">
+                    {{ doctor.name }}
+                </h2>
+                <p class="mt-2 text-lg">
+                    <strong class="text-blue-600">Specialty:</strong>
+                    {{ doctor.specialty }}
+                </p>
+                <p class="mt-1 text-lg">
+                    <strong class="text-blue-600">Location:</strong>
+                    {{ doctor.location }}
+                </p>
+                <p class="mt-1 text-lg">
+                    <strong class="text-blue-600">Hospital:</strong>
+                    {{ doctor.hospital }}
+                </p>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <!-- About Section at Bottom -->
+    <div id="about-section" class="container mx-auto mt-16 mb-8 p-6 bg-white rounded-lg shadow-lg">
+        <h2 class="text-3xl font-bold mb-4 font-[Montserrat] text-gray-700 border-b-2 border-blue-500 pb-2">About DocHub</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+                <p class="text-lg mb-4 leading-relaxed">
+                    <span class="font-semibold text-blue-600 text-xl">DocHub</span> is your premier platform for finding and connecting with the best healthcare professionals in your area.
+                </p>
+                <p class="text-lg mb-4 leading-relaxed">
+                    We believe that everyone deserves access to quality healthcare from trusted providers. Our mission is to simplify the process of finding the right doctor for your specific needs.
+                </p>
+                <p class="text-lg leading-relaxed">
+                    With our extensive database of qualified physicians across various specialties, you can easily search, compare, and choose the perfect healthcare provider for you and your family.
+                </p>
+            </div>
+            <div>
+                <h3 class="text-2xl font-semibold mb-3 text-gray-700">Our Features</h3>
+                <ul class="space-y-2">
+                    <li class="flex items-start">
+                        <i class="fas fa-search text-blue-500 mt-1 mr-2"></i>
+                        <span>Comprehensive search by specialty, location, or name</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-hospital text-blue-500 mt-1 mr-2"></i>
+                        <span>Hospital and clinic affiliations</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-user-md text-blue-500 mt-1 mr-2"></i>
+                        <span>Detailed doctor profiles and credentials</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-calendar-check text-blue-500 mt-1 mr-2"></i>
+                        <span>Easy appointment scheduling (coming soon)</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-700 text-white p-4 mt-16 rounded-lg">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2025 DocHub. All rights reserved.</p>
+            <p class="mt-2">Connecting patients with quality healthcare providers since 2023.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Search Functionality -->
+    <script>
+        const searchBar = document.getElementById('search-bar');
+        const doctorList = document.getElementById('doctor-list');
+        const doctorCards = document.querySelectorAll('.doctor-card');
+
+        // Search functionality
+        searchBar.addEventListener('input', function() {
+            const searchTerm = searchBar.value.toLowerCase();
+
+            doctorCards.forEach(card => {
+                const name = card.getAttribute('data-name');
+                const specialty = card.getAttribute('data-specialty');
+                const location = card.getAttribute('data-location');
+
+                if (name.includes(searchTerm) ||
+                    specialty.includes(searchTerm) ||
+                    location.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
